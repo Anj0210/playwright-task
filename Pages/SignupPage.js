@@ -13,8 +13,24 @@ class SignupPage {
       await this.firstName.fill(first);
       await this.lastName.fill(last);
       await this.email.fill(email);
+      
+      // Handle phone - try to fill if field exists
+      try {
+        const phoneElement = this.page.locator("//input[@name='phone']");
+        if (await phoneElement.count() > 0) {
+          await phoneElement.fill('1234567890').catch(() => {});
+        }
+      } catch (e) {
+        // Phone field is optional, ignore errors
+      }
+      
       await this.password.fill(pass);
+      
+      // Click the signup button
       await this.signupBtn.click();
+      
+      // Wait briefly for navigation
+      await this.page.waitForTimeout(2000);
     }
   }
   module.exports = { SignupPage };

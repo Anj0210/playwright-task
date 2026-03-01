@@ -1,27 +1,48 @@
 // pages/OnboardingPage.js
-export class OnboardingPage {
+class OnboardingPage {
     constructor(page) {
       this.page = page;
-      //this.businessRadio = page.locator('text=Business');
+      // Account type radio buttons
       this.clientRadio = page.locator("//div[contains(@class, 'radio')]//span[text()='Clients']/ancestor::label//input[@type='radio']");
       this.businessRadio = page.locator("//span[text()='Business']/ancestor::label//input[@type='radio']");
-      //this.personalRadio = page.locator('text=Personal Use');
-      //this.nextButton = page.locator('button:has(svg)'); // Based on your screenshots
+      this.personalRadio = page.locator("//span[text()='Personal Use']/ancestor::label//input[@type='radio']");
+      
+      // Next button - generic selector for onboarding steps
+      this.nextButton = page.locator('button:has-text("Continue")').first();
+      this.submitButton = page.locator('button:has-text("Get Started")').first();
+    }
+  
+    async selectAccountType(accountType) {
+      if (accountType === 'Clients') {
+        await this.clientRadio.click({ timeout: 10000 });
+      } else if (accountType === 'Business') {
+        await this.businessRadio.click({ timeout: 10000 });
+      } else if (accountType === 'Personal Use') {
+        await this.personalRadio.click({ timeout: 10000 });
+      }
+    }
+  
+    async clickNext() {
+      await this.nextButton.click({ timeout: 10000 }).catch(async () => {
+        await this.submitButton.click({ timeout: 10000 });
+      });
     }
   
     async completeOnboarding(accountType) {
-      if (accountType === 'Clients') {
-        await this.clientRadio.click();
-        //await this.nextButton.click();
-        // Add Business specific steps (Company size, Goal)
-      } else if (accountType === 'Business') {
-        await this.BusinessRadio.click();
-        //await this.nextButton.click();
-        // Add Client specific steps (Agency type, Volume)
-      } else {
-        await this.personalRadio.click();
-        await this.nextButton.click();
-        // Add Personal steps
-      }
+      // Select the account type
+      await this.selectAccountType(accountType);
+      
+      // Click continue/submit
+      await this.clickNext();
+      
+      // Wait for navigation or next step
+      await this.page.waitForTimeout(2000);
+    }
+  
+    async isOnOnboardingPage() {
+      const url = this.page.url();
+      return url.includes('/onboarding') || url.includes('/setup');
     }
   }
+  
+  module.exports = { OnboardingPage };
