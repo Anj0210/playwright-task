@@ -6,9 +6,9 @@ module.exports = defineConfig({
   retries: 0,
   use: {
     headless: false,
-    viewport: null,
+    viewport: {width:1280,height:300},
     args: ["--start-maximized"],
-    baseURL: 'https://my.saleshandy.com',
+    baseURL: 'https://my.saleshandy.com/signup'
   },
 
   /* Add this section below */

@@ -11,6 +11,11 @@ class LoginPage {
         await this.passwordInput.fill(pass);
         await this.loginBtn.click();
     }
+
+    async isOnOnboardingPage() {
+        const url = this.page.url();
+        return url.includes('/onboarding') || url.includes('/setup');
+    }
 }
 
 module.exports = { LoginPage };
